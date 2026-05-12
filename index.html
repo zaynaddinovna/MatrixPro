@@ -765,9 +765,16 @@
         };
 
         history.unshift(newItem);
-        history = history.slice(0, 3); // Keep only last 3
+        history = history.slice(0, 3);
         localStorage.setItem(`history_${user}`, JSON.stringify(history));
         updateHistoryUI();
+
+        // Full-stack API Call (Azure Functions)
+        fetch('/api/SaveOperation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user, ...newItem })
+        }).catch(err => console.log("Backend not connected, using local storage."));
     }
 
     function updateHistoryUI() {
